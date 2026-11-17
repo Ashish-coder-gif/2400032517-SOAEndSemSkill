@@ -8,7 +8,7 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    String secret = "mysecretkeymysecretkeymysecretkey12345";
+    String secret = System.getenv("JWT_SECRET");
 
     public String generateToken(String username) {
 

@@ -1,0 +1,42 @@
+package soa.security;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.stereotype.Service;
+import java.util.Date;
+
+@Service
+public class JwtService {
+
+    String secret = "mysecretkeymysecretkeymysecretkey12345";
+
+    public String generateToken(String username) {
+
+        return Jwts.builder()
+            .subject(username)
+            .issuedAt(new Date())
+            .expiration(new Date(System.currentTimeMillis() + 86400000))
+            .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
+            .compact();
+    }
+
+    public String extractUsername(String token) {
+
+        return Jwts.parser()
+            .verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))
+            .build()
+            .parseSignedClaims(token)
+            .getPayload()
+            .getSubject();
+    }
+
+    public boolean validateToken(String token) {
+
+        try {
+            extractUsername(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+}
